@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            background-size: 400% 400%;
+            animation: lightingEffect 5s ease infinite;
+        }
+
+        @keyframes lightingEffect {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            max-width: 800px;
+            height: 500px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .login-section, .signup-section {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .login-section h2, .signup-section h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .login-section input[type="text"],
+        .login-section input[type="password"],
+        .signup-section input[type="email"],
+        .signup-section input[type="text"],
+        .signup-section input[type="password"],
+        .signup-section input[type="tel"] {
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .login-section input[type="submit"],
+        .signup-section input[type="submit"] {
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .login-section input[type="submit"]:hover,
+        .signup-section input[type="submit"]:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .toggle-btns {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .toggle-btns button {
+            background: none;
+            border: none;
+            color: #4CAF50;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .toggle-btns button:hover {
+            text-decoration: underline;
+        }
+
+        .image-section {
+            width: 50%;
+            background-image: url('200.gif'); /* Replace with your image */
+            background-size: cover;
+            background-position: center;
+            animation: slideIn 2s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .loading-spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .login-section, .signup-section, .image-section {
+                width: 100%;
+                height: auto;
+            }
+
+            .login-section input[type="text"],
+            .login-section input[type="password"],
+            .signup-section input[type="email"],
+            .signup-section input[type="text"],
+            .signup-section input[type="password"],
+            .signup-section input[type="tel"] {
+                width: 100%;
+            }
+
+            .login-section h2, .signup-section h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loading-spinner" id="loading-spinner"></div>
+
+    <div class="container">
+        <!-- Login Section -->
+        <div class="login-section" id="login-section">
+            <h2>Login</h2>
+            <form action="login.php" method="post" id="login-form" onsubmit="showLoadingSpinner()">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" required><br><br>
+
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <input type="submit" value="Login">
+                <div id="error-message" class="error-message"></div>
+            </form>
+            <div class="toggle-btns">
+                <button onclick="toggleSection('signup')">Sign Up</button>
+            </div>
+        </div>
+
+        <!-- SignUp Section -->
+        <div class="signup-section" id="signup-section" style="display: none;">
+            <h2>Sign Up</h2>
+            <form action="signup.php" method="post" onsubmit="return validateMobile()">
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <label for="mobile">Mobile Number:</label><br>
+                <input type="tel" id="mobile" name="mobile" required pattern="^\d{10}$" title="Please enter exactly 10 digits"><br><br>
+
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <input type="submit" value="Sign Up">
+            </form>
+            <div class="toggle-btns">
+                <button onclick="toggleSection('login')">Login</button>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="image-section"></div>
+    </div>
+
+    <script>
+        function toggleSection(section) {
+            if (section === 'signup') {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('signup-section').style.display = 'flex';
+            } else {
+                document.getElementById('signup-section').style.display = 'none';
+                document.getElementById('login-section').style.display = 'flex';
+            }
+        }
+
+        function validateMobile() {
+            const mobile = document.getElementById("mobile").value;
+            if (mobile.length !== 10) {
+                alert("Mobile number must be exactly 10 digits.");
+                return false;
+            }
+            return true;
+        }
+
+        function showLoadingSpinner() {
+            document.getElementById('loading-spinner').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.getElementById('error-message').innerText = 'Invalid username or password';
+            }, 5000);
+        }
+    </script>
+
+</body>
+</html>
